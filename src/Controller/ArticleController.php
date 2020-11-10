@@ -1,3 +1,4 @@
+<?php
 // src/Controller/ArticleController.php
 namespace App\Controller;
 
