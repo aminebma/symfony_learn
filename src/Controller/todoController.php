@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Document\Todo;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -48,6 +49,23 @@ class todoController extends AbstractController
     }
 
     /**
+     * @Route("/todos/all", methods={"GET"}, name="get_all_todos")
+     */
+    public function getAllTodos(DocumentManager $dm) : Response
+    {
+        $todos = $dm->getRepository(Todo::class)->findAll();
+
+        if (!$todos)
+            throw $this->createNotFoundException('No todos found');
+
+        $response = new JsonResponse();
+        $response->setContent(json_encode($todos));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+
+
+    /**
      * @Route("/todo/update", methods={"POST"}, name="update_todo")
      */
     public function updateTodo(Request $request, DocumentManager $dm): Response{
@@ -68,9 +86,9 @@ class todoController extends AbstractController
     /**
      * @Route("/todo/delete/{id}", methods={"DELETE"}, name="delete_todo")
      */
-    public function deleteTodo(DocumentManager $dm, string $id) : Response{
+    public function deleteTodo(DocumentManager $dm, string $id) : Response
+    {
         $todo = $dm->getRepository(Todo::class)->find($id);
-
         if (!$todo) {
             throw $this->createNotFoundException('No todo found for id ' . $id);
         }
