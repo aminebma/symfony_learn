@@ -1,11 +1,9 @@
 <?php
 
-
 namespace App\Controller;
 
 use App\Document\Todo;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,8 +56,9 @@ class todoController extends AbstractController
         if (!$todos)
             throw $this->createNotFoundException('No todos found');
 
-        $response = new JsonResponse();
-        $response->setContent(json_encode($todos));
+        $data =  $this->get('serializer')->serialize($todos, 'json');
+
+        $response = new Response($data);
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
