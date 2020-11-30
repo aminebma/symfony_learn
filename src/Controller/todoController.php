@@ -26,7 +26,7 @@ class todoController extends AbstractController
         $dm->flush();
 
 
-        return new Response('Created product id ' . $todo->getId());
+        return new Response('Created todo id ' . $todo->getId());
     }
 
     /**
